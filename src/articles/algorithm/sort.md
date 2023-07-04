@@ -154,3 +154,80 @@ const selectionSort = (list) => {
   return list;
 };
 ```
+
+### 归并排序
+
+归并排序是一个采用分治法的典型排序，其工作原理是将子序列进行排序，并且将已经排序好的子序列合并成一个有序的列表
+
+#### 复杂度
+
+空间复杂度: `O(n)`
+
+时间复杂度：平均`O(nlog2n)` 最好`O(nlog2n)` 最坏`O(log2n)`
+
+#### 代码实现
+
+```javascript
+const merge = (part1, part2) => {
+  const result = [];
+  while (!!part1.length || !!part2.length) {
+    if (part1[0] !== undefined && part2[0] !== undefined) {
+      if (part1[0] < part2[0]) {
+        result.push(part1.shift());
+      } else {
+        result.push(part2.shift());
+      }
+    } else if (part1[0] !== undefined) {
+      result.push(part1.shift());
+    } else {
+      result.push(part2.shift());
+    }
+  }
+  return result;
+};
+
+const mergeSort = (list) => {
+  if (list.length <= 1) return list;
+  const mid = Math.floor(list.length / 2);
+  return merge(mergeSort(list.slice(0, mid)), mergeSort(list.slice(mid)));
+};
+```
+
+### 快速排序
+
+快速排序的思想是，将一个列表分为多个列表，其一个列表中的元素均比前一个列表中的元素大，再将每个列表进行快速排序
+
+#### 复杂度
+
+空间复杂度: `O(1)`
+
+时间复杂度：平均`O(nlog2n)` 最好`O(nlog2n)` 最坏`O(n^2)`
+
+```javascript
+const quickSortPart = (list, low, high) => {
+  if (high <= low) return;
+  let great = low;
+  let less = low;
+
+  // 取出一个值用来比较大小
+  const pivot = list[high];
+  // 遍历列表，将比pivot小的都放到了less前面
+  for (; great < high; great++) {
+    if (list[great] < pivot) {
+      // 这样最后交换less与high就可以达到分割大小的作用
+      swap(list, less, great);
+      less++;
+    }
+  }
+  // 交换less与high,达到将比pivot小的放到less前面，把pivot大的放到less后面的效果
+  swap(list, less, high);
+  quickSortPart(list, low, less - 1);
+  quickSortPart(list, less + 1, high);
+};
+
+const quickSort = (list) => {
+  if (list.length <= 1) return list;
+  quickSortPart(list, 0, list.length - 1);
+  return list;
+};
+```
