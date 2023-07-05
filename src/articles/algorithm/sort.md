@@ -203,6 +203,8 @@ const mergeSort = (list) => {
 
 时间复杂度：平均`O(nlog2n)` 最好`O(nlog2n)` 最坏`O(n^2)`
 
+#### 代码实现
+
 ```javascript
 const quickSortPart = (list, low, high) => {
   if (high <= low) return;
@@ -229,5 +231,65 @@ const quickSort = (list) => {
   if (list.length <= 1) return list;
   quickSortPart(list, 0, list.length - 1);
   return list;
+};
+```
+
+### 堆排序
+
+堆排序是一种利用小顶堆、大顶堆进行排序的方法，其原理是每次从列表中取出一个数放到已建好的堆的最后面，然后再根据堆的特性与父节点比较，假如不满足条件，则将两个节点的值互换，并且继续向上层节点比较
+
+#### 复杂度
+
+空间复杂度: `O(n)`
+
+时间复杂度：平均`O(nlog2n)` 最好`O(n)` 最坏`O(log2n)`
+
+#### 代码实现
+
+```javascript
+const defaultComparator = (a, b) => a - b;
+class Heap {
+  list = [];
+  comparator;
+
+  constructor(comparator) {
+    this.comparator = comparator ?? defaultComparator;
+  }
+
+  parentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
+
+  hasParent(index) {
+    const parentIndex = this.parentIndex(index);
+    return parentIndex >= 0 && this.list[parentIndex] !== undefined;
+  }
+
+  heapifyUp() {
+    let lastIndex = this.list.length - 1;
+    while (
+      this.hasParent(lastIndex) &&
+      this.comparator(
+        this.list[this.parentIndex(lastIndex)],
+        this.list[lastIndex]
+      ) > 0
+    ) {
+      swap(this.list, this.parentIndex(lastIndex), lastIndex);
+      lastIndex = this.parentIndex(lastIndex);
+    }
+  }
+
+  add(item) {
+    this.list.push(item);
+    this.heapifyUp();
+  }
+}
+
+const heapSort = (list) => {
+  const heap = new Heap();
+  for (const item of list) {
+    heap.add(item);
+  }
+  return heap.list;
 };
 ```
